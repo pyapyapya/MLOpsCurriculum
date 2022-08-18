@@ -53,3 +53,33 @@ Vary: Accept-Encoding
 
 이때 가장 많이 사용되는 프로토콜은 HTTP Protocol
 HTTP 형식으로 클라이언트에게 API에 요청을 보내고, API 서버는 그 결과를 response로 되돌려줌
+
+### Assignment
+<b>특정 유저의 돈을 다른 유저에게 전달하는 상황</b>
+ex) 3번 사람이 4번 사람에게 1000원 전달
+
+<b>URI</b><br>
+POST/transfers
+
+<b>Parameter</b>
+|Name|Type|Description|
+|:----:|:---:|:------------:|
+|sender_id|str|송금자 아이디|
+|transfer_money|int|보내는 돈|
+|receiver_id|str|수신자 아이디|
+
+<b>Response</b>
+|Name|Type|Description|
+|:----:|:---:|:------------:|
+|sender_id|str|송금자 아이디|
+|sender_balance|int|송금자 남은 잔고|
+|transfer_money|int|보내는 돈|
+|receiver_id|str|수신자 아이디|
+
+<b>Error Message</b>
+|error code|message|Description|
+|:----:|:---:|:------------:|
+|200|송금이 완료되었습니다.|정상 처리|
+|400|1원 이상의 돈을 보내야 합니다.|돈을 0원 혹은, 그 이하로 보내려는 시도를 함|
+|400|잔액이 부족합니다.|수신자의 잔고가 보내는 돈보다 적음|
+|400|해당 유저가 존재하지 않습니다.| 수신자 id가 유효하지 않음
