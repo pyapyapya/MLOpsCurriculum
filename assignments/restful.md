@@ -25,6 +25,8 @@ Accept: */*
 - Headers: `User-Agent: curl/7.54.0` 과 같이  :로 구분된 Key-Value 값에 해당함
   - `User-Agent` 클라이언트의 브라우저, `Accept` 클라이언트가 해석할 수 있는 형식
 - Body: `POST` , `PUT` 등 메소드의 요청 시 정보를 첨부하는 곳
+
+---
 RESTful API란?
 
 HTTP Respons의 예시는 다음과 같다.
@@ -54,6 +56,7 @@ Vary: Accept-Encoding
 이때 가장 많이 사용되는 프로토콜은 HTTP Protocol
 HTTP 형식으로 클라이언트에게 API에 요청을 보내고, API 서버는 그 결과를 response로 되돌려줌
 
+---
 ### Assignment
 <b>특정 유저의 돈을 다른 유저에게 전달하는 상황</b>
 ex) 3번 사람이 4번 사람에게 1000원 전달
