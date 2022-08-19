@@ -62,7 +62,7 @@ HTTP 형식으로 클라이언트에게 API에 요청을 보내고, API 서버�
 ex) 3번 사람이 4번 사람에게 1000원 전달
 
 <b>URI</b><br>
-POST/transfers
+POST/transaction
 
 <b>Parameter</b>
 |Name|Type|Description|
