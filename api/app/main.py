@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import List, Union, Optional
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -27,7 +27,7 @@ async def health_check():
     return {"status": "OK"}
 
 
-@app.get("/users", response_model=schemas.User)
+@app.get("/users", response_model=List[schemas.User])
 async def get_users(db: Session = Depends(get_db)):
     users = crud.get_users(db)
     return users
