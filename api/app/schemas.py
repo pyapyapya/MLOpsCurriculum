@@ -16,6 +16,6 @@ class User(UserBase):
         orm_mode = True
 
 
-class UserCreate(UserBase):
+class UserInfo(UserBase):
     name: str
     age: Optional[int] = None

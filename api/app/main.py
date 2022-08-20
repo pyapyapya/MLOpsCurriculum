@@ -1,6 +1,7 @@
 from typing import List, Union, Optional
 
 from fastapi import FastAPI, Depends, HTTPException, Response
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
@@ -40,18 +41,21 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/users/", response_model=schemas.User)
-async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    # user = crud.get_user_name(name, db)
-    # if user:
-    #     raise HTTPException(status_code=400, detail="User name")
-    # user = schemas.UserCreate(name=name, age=age)
+async def create_user(user: schemas.UserInfo, db: Session = Depends(get_db)):
+    user = crud.serach_user_name(user.name, db)
+    if user:
+        raise HTTPException(status_code=400, detail="User name")
     users = crud.create_user(user, db)
     return users
 
 
 @app.put("/users/{user_id}", response_model=schemas.User)
-async def update_user(user_id: int, db: Session = Depends(get_db)):
-    pass
+async def update_user(user_id: int, user_info: schemas.UserInfo, db: Session = Depends(get_db)):
+    """
+    Update a user in the database
+    """
+    user = crud.update_user(user_id, user_info, db)
+    return {"id": user_id, **user_info.dict()}
 
 
 @app.delete("/users/{user_id}")
