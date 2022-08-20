@@ -6,8 +6,11 @@
 
 from typing import List, Optional, Union
 
-from fastapi import Depends, FastAPI, HTTPException, Response
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from sqlalchemy.orm import Session
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
 
 import crud
 import models
@@ -18,6 +21,13 @@ from utils import search_user_id, serach_user_name
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+	exc_str = f'{exc}'.replace('\n', ' ').replace('   ', ' ')
+	content = {'status_code': 400, 'message': exc_str, 'data': None}
+	return JSONResponse(content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 def get_db():
@@ -34,12 +44,7 @@ def get_db():
 @app.get("/")
 async def health_check():
     """
-    health_check that is checking a db connection
-
-    Returns
-    -------
-    _type_
-        _description_
+    checking a db connection
     """
     return "OK"
 
