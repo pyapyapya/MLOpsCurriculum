@@ -7,7 +7,7 @@ class UserBase(BaseModel):
     pass
 
 
-class User(UserBase):
+class UserInfo(UserBase):
     id: int
     name: str
     age: Optional[int] = None
@@ -16,6 +16,6 @@ class User(UserBase):
         orm_mode = True
 
 
-class UserInfo(UserBase):
+class UserCreate(UserBase):
     name: str
     age: Optional[int] = None

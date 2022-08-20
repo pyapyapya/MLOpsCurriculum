@@ -1,10 +1,4 @@
-"""
-    [TODO]
-    - 422 ERROR Handling The user is not found
-    - 400 ERROR Handling Invalid user id.
-"""
-
-from typing import List, Optional, Union
+from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException, Request, status
 from sqlalchemy.orm import Session
@@ -12,13 +6,13 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 
-import crud
-import models
-import schemas
-from database import SessionLocal, engine
+from crud import crud_user
+from database.tables.user import Base
+from schemas.user import UserInfo, UserCreate
+from database.database import SessionLocal, engine
 from utils import search_user_id, serach_user_name
 
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -49,7 +43,7 @@ async def health_check():
     return "OK"
 
 
-@app.get("/users", response_model=List[schemas.User])
+@app.get("/users", response_model=List[UserInfo])
 async def get_users(db: Session = Depends(get_db)):
     """
     Get All User Lists
@@ -64,11 +58,11 @@ async def get_users(db: Session = Depends(get_db)):
     _type_
         _description_
     """
-    users = crud.get_users(db)
+    users = crud_user.get_users(db)
     return users
 
 
-@app.get("/users/{user_id}", response_model=schemas.User)
+@app.get("/users/{user_id}", response_model=UserInfo)
 async def get_user(user_id: int, db: Session = Depends(get_db)):
     """
     get_user _summary_
@@ -99,12 +93,12 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     if not has_id:
         raise HTTPException(status_code=404, detail=f"The User is not found.")
 
-    users = crud.get_user(user_id, db)
+    users = crud_user.get_user(user_id, db)
     return users
 
 
-@app.post("/users", response_model=schemas.User)
-async def create_user(user: schemas.UserInfo, db: Session = Depends(get_db)):
+@app.post("/users", response_model=UserInfo)
+async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """
     Create a user in the database
 
@@ -134,13 +128,13 @@ async def create_user(user: schemas.UserInfo, db: Session = Depends(get_db)):
     if has_name:
         raise HTTPException(status_code=409, detail="The user already exists.")
 
-    users = crud.create_user(user, db)
+    users = crud_user.create_user(user, db)
     return users
 
 
-@app.put("/users/{user_id}", response_model=schemas.User)
+@app.put("/users/{user_id}", response_model=UserInfo)
 async def update_user(
-    user_id: int, user_info: schemas.UserInfo, db: Session = Depends(get_db)
+    user_id: int, user_info: UserCreate, db: Session = Depends(get_db)
 ):
     """
     Update a user in the database
@@ -184,7 +178,7 @@ async def update_user(
     if has_name:
         raise HTTPException(status_code=409, detail="The user already exists.")
 
-    crud.update_user(user_id, user_info, db)
+    crud_user.update_user(user_id, user_info, db)
     return {"id": user_id, **user_info.dict()}
 
 
@@ -212,7 +206,7 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
     HTTPException
         _description_
     """
-    user = crud.get_user(user_id, db)
+    user = crud_user.get_user(user_id, db)
 
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
@@ -221,5 +215,5 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
     if not has_id:
         raise HTTPException(status_code=404, detail=f"The User is not found.")
 
-    crud.delete_user(user_id, db)
+    crud_user.delete_user(user_id, db)
     return user

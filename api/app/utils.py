@@ -1,11 +1,10 @@
 from sqlalchemy.orm import Session
 
-import models
-
+from database.tables.user import User
 
 def search_user_id(user_id: int, db: Session):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+    return db.query(User).filter(User.id == user_id).first()
 
 
 def serach_user_name(name: str, db: Session):
-    return db.query(models.User).filter(models.User.name == name).first()
+    return db.query(User).filter(User.name == name).first()
