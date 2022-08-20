@@ -24,7 +24,7 @@ def get_db():
 
 @app.get("/")
 async def health_check():
-    return {"status": "OK"}
+    return "OK"
 
 
 @app.get("/users", response_model=List[schemas.User])
