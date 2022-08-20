@@ -9,6 +9,8 @@ class UserBase(BaseModel):
 
 class User(UserBase):
     id: int
+    name: str
+    age: Optional[int] = None
 
     class Config:
         orm_mode = True
