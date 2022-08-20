@@ -1,6 +1,6 @@
 from typing import List, Union, Optional
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
@@ -54,7 +54,10 @@ async def update_user(user_id: int, db: Session = Depends(get_db)):
     pass
 
 
-@app.delete("/users/{user_id}", response_model=schemas.User)
+@app.delete("/users/{user_id}")
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
-    users = crud.delete_user(user_id)
-    pass
+    user = crud.get_user(user_id, db)
+    # if not user:
+    #     raise HTTPException(status_code=400, detail="User name")
+    crud.delete_user(user_id, db)
+    return user
