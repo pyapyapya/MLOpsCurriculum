@@ -12,10 +12,6 @@ def get_users(db: Session):
     return db.query(models.User).all()
 
 
-def serach_user_name(name: str, db: Session):
-    return db.query(models.User).filter(models.User.name == name).first()
-
-
 def create_user(user: schemas.UserInfo, db: Session):
     db_user = models.User(name=user.name, age=user.age)
     db.add(db_user)
