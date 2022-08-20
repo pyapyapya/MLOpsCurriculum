@@ -15,6 +15,9 @@ app = FastAPI()
 
 
 def get_db():
+    """
+    Get Database instance
+    """
     db = SessionLocal()
     try:
         yield db
@@ -24,17 +27,60 @@ def get_db():
 
 @app.get("/")
 async def health_check():
+    """
+    health_check that is checking a db connection
+
+    Returns
+    -------
+    _type_
+        _description_
+    """
     return "OK"
 
 
 @app.get("/users", response_model=List[schemas.User])
 async def get_users(db: Session = Depends(get_db)):
+    """
+    Get All User Lists
+
+    Parameters
+    ----------
+    db : Session, optional
+        _description_, by default Depends(get_db)
+
+    Returns
+    -------
+    _type_
+        _description_
+    """
     users = crud.get_users(db)
     return users
 
 
 @app.get("/users/{user_id}", response_model=schemas.User)
 async def get_user(user_id: int, db: Session = Depends(get_db)):
+    """
+    get_user _summary_
+
+    Parameters
+    ----------
+    user_id : int
+        _description_
+    db : Session, optional
+        _description_, by default Depends(get_db)
+
+    Returns
+    -------
+    _type_
+        _description_
+
+    Raises
+    ------
+    HTTPException
+        _description_
+    HTTPException
+        _description_
+    """
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
 
@@ -50,6 +96,25 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
 async def create_user(user: schemas.UserInfo, db: Session = Depends(get_db)):
     """
     Create a user in the database
+
+    Parameters
+    ----------
+    user : schemas.UserInfo
+        _description_
+    db : Session, optional
+        _description_, by default Depends(get_db)
+
+    Returns
+    -------
+    _type_
+        _description_
+
+    Raises
+    ------
+    HTTPException
+        _description_
+    HTTPException
+        _description_
     """
     if user.age <= 0:
         raise HTTPException(status_code=400, detail="age parameter is must be integer.")
@@ -68,6 +133,31 @@ async def update_user(
 ):
     """
     Update a user in the database
+
+    Parameters
+    ----------
+    user_id : int
+        _description_
+    user_info : schemas.UserInfo
+        _description_
+    db : Session, optional
+        _description_, by default Depends(get_db)
+
+    Returns
+    -------
+    _type_
+        _description_
+
+    Raises
+    ------
+    HTTPException
+        _description_
+    HTTPException
+        _description_
+    HTTPException
+        _description_
+    HTTPException
+        _description_
     """
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
@@ -91,6 +181,25 @@ async def update_user(
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
     """
     Delete a user in the database
+
+    Parameters
+    ----------
+    user_id : int
+        _description_
+    db : Session, optional
+        _description_, by default Depends(get_db)
+
+    Returns
+    -------
+    _type_
+        _description_
+
+    Raises
+    ------
+    HTTPException
+        _description_
+    HTTPException
+        _description_
     """
     user = crud.get_user(user_id, db)
 
