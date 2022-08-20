@@ -1,13 +1,14 @@
-from typing import Optional, Union
+from typing import Union, Optional
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
+
 
 import crud
 import models
 import schemas
 from database import SessionLocal, engine
-
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -20,7 +21,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
 
 @app.get("/")
 async def health_check():
@@ -35,7 +35,7 @@ async def get_users(db: Session = Depends(get_db)):
 
 @app.get("/users/{user_id}", response_model=schemas.User)
 async def get_user(user_id: int, db: Session = Depends(get_db)):
-    users = crud.get_user(db, user_id)
+    users = crud.get_user(user_id, db)
     return users
 
 
