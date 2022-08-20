@@ -1,3 +1,9 @@
+"""
+    [TODO]
+    - 422 ERROR Handling The user is not found
+    - 400 ERROR Handling Invalid user id.
+"""
+
 from typing import List, Optional, Union
 
 from fastapi import Depends, FastAPI, HTTPException, Response
