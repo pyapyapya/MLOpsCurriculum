@@ -1,3 +1,9 @@
+### Getting Start
+```
+cd api/app/
+uvicorn main:app --reload
+```
+
 ### Assignment
 - 아래 명세를 만족하는 API를 설계하고 DB를 구축하기
 
@@ -132,7 +138,7 @@
 |404|The user is not found.|해당 유저를 찾을 수 없음|
 
 
-### DB
+## DB
 <b>Table User</b><br>
 |Name|Type|nullable|unique|primary|
 |:----:|:---:|:------:|:------------:|:------:|
