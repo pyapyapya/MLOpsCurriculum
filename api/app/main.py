@@ -9,7 +9,6 @@ from crud import crud_user
 from database.database import SessionLocal, engine
 from database.tables.user import Base
 from schemas.user import UserCreate, UserInfo
-from utils import search_user_id, serach_user_name
 
 Base.metadata.create_all(bind=engine)
 
@@ -90,7 +89,7 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
 
-    has_id = search_user_id(user_id, db)
+    has_id = get_user(user_id, db)
     if not has_id:
         raise HTTPException(status_code=404, detail=f"The User is not found.")
 
@@ -125,7 +124,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     if user.age <= 0:
         raise HTTPException(status_code=400, detail="age parameter is must be integer.")
 
-    has_name = serach_user_name(user.name, db)
+    has_name = crud_user.get_user_name(user.name, db)
     if has_name:
         raise HTTPException(status_code=409, detail="The user already exists.")
 
