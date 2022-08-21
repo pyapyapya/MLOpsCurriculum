@@ -37,7 +37,7 @@ async def health_check():
 @app.get("/users", response_model=List[UserInfo])
 async def get_users(db: Session = Depends(get_db)):
     """
-    Get All User Lists
+    Get All User Lists [(user_id, name, age), ...]
 
     Returns
     -------
@@ -60,7 +60,7 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     Returns
     -------
     User
-        User Information
+        User Information (user_id, name, age)
 
     Raises
     ------
@@ -93,7 +93,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     Returns
     -------
     User
-        Created User Information
+        Created User Information (user_id, name, age)
 
     Raises
     ------
@@ -137,7 +137,7 @@ async def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_
     Returns
     -------
     User
-        Updated User Information
+        Updated User Information (user_id, name, age)
 
     Raises
     ------
