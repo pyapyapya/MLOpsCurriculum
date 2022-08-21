@@ -1,24 +1,29 @@
+from re import sub
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from crud import crud_user
-from schemas.user import UserCreate, UserInfo
 from database.session import get_db
+from schemas.user import UserCreate, UserInfo
 
 app = FastAPI()
 
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
+async def validation_exception_handler(_: Request, exc: RequestValidationError):
     exc_str = f"{exc}".replace("\n", " ").replace("   ", " ")
-    content = {"status_code": 400, "message": exc_str, "data": None}
-    return JSONResponse(
-        content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
-    )
+    content = {"status_code": 400, "message": exc_str}
+    return JSONResponse(content=content, status_code=400)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_error_handler(_: Request, exc: HTTPException) -> JSONResponse:
+    return JSONResponse({"errors": [exc.detail]}, status_code=exc.status_code)
 
 
 @app.get("/")
@@ -100,8 +105,17 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     HTTPException
         status_code=409, The user already exists.\n
     """
-    if user.age is not None and user.age <= 0:
-        raise HTTPException(status_code=400, detail="Age parameter is must be integer.")
+    name_checker = sub("[^A-Za-z0-9]", "", user.name)
+    if name_checker != user.name:
+        raise HTTPException(status_code=400, detail="name must be english or number")
+
+    if user.age is not None:
+        if user.age < 0 or user.age > 120:
+            raise HTTPException(status_code=400, detail="Age must be 0 < age <= 120")
+        if not isinstance(user.age, int):
+            raise HTTPException(
+                status_code=400, detail="Age parameter is must be integer."
+            )
 
     has_name = crud_user.find_name(user.name, db)
     if has_name:
@@ -112,9 +126,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @app.put("/users/{user_id}", response_model=UserInfo)
-async def update_user(
-    user_id: int, user: UserCreate, db: Session = Depends(get_db)
-):
+async def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
     """
     Update a user in the database
 
@@ -144,8 +156,17 @@ async def update_user(
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
 
-    if user.age is not None and user.age <= 0:
-        raise HTTPException(status_code=400, detail="Age parameter is must be integer.")
+    name_checker = sub("[^A-Za-z0-9]", "", user.name)
+    if name_checker != user.name:
+        raise HTTPException(status_code=400, detail="name must be english or number")
+
+    if user.age is not None:
+        if user.age < 0 or user.age > 120:
+            raise HTTPException(status_code=400, detail="Age must be 0 < age <= 120")
+        if not isinstance(user.age, int):
+            raise HTTPException(
+                status_code=400, detail="Age parameter is must be integer."
+            )
 
     has_id = crud_user.find(user_id, db)
     if not has_id:

@@ -18,4 +18,4 @@ class UserInfo(UserBase):
 
 class UserCreate(UserBase):
     name: str = Field(title="유저 닉네임")
-    age: Optional[int] = Field(title="유저 나이", default=None)
+    age: Optional[int] = Field(title="사용자 나이", default=None)
