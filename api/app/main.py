@@ -39,9 +39,6 @@ async def get_users(db: Session = Depends(get_db)):
     """
     Get All User Lists
 
-    Parameters
-    ----------
-
     Returns
     -------
     List[User]
@@ -63,14 +60,14 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     Returns
     -------
     User
-        get user
+        User Information
 
     Raises
     ------
     HTTPException
-        status_code=400, Invalid User ID: {user_id}\m
+        status_code=400, Invalid User ID: {user_id}\n
     HTTPException
-        status_code=404, The User is not found.\m
+        status_code=404, The User is not found.\n
     """
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
@@ -151,7 +148,7 @@ async def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_
     HTTPException
         status_code=404, The User is not found.\n
     HTTPException
-        status_code=409, The user already exists.
+        status_code=409, The user already exists.\n
     """
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
@@ -199,7 +196,7 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
     HTTPException
         status_code=400, Invalid User ID: {user_id}\n
     HTTPException
-        status_code=404, The User is not found.
+        status_code=404, The User is not found.\n
     """
 
     if not isinstance(user_id, int):
