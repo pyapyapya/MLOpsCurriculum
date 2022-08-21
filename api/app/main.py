@@ -36,7 +36,6 @@ async def get_users(db: Session = Depends(get_db)):
 
     Parameters
     ----------
-    db : Session, optional
 
     Returns
     -------
@@ -55,7 +54,6 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     Parameters
     ----------
     user_id : int
-    db : Session, optional
 
     Returns
     -------
@@ -65,9 +63,9 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     Raises
     ------
     HTTPException
-        status_code=400, Invalid User ID: {user_id}
+        status_code=400, Invalid User ID: {user_id}\m
     HTTPException
-        status_code=404, The User is not found.
+        status_code=404, The User is not found.\m
     """
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
@@ -86,10 +84,9 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
     Parameters
     ----------
-    user : schemas.UserInfo
-        name: str (max_length<=16)
-        age: int (0 < age <= 120)
-    db : Session, optional
+    user : schemas.UserInfo\n
+        name: str (max_length<=16)\n
+        age: int (0 < age <= 120)\n
 
     Returns
     -------
@@ -99,11 +96,11 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     Raises
     ------
     HTTPException
-        status_cod=400, Age parameter is must be integer.
+        status_cod=400, Age parameter is must be integer.\n
     HTTPException
-        status_code=409, The user already exists.
+        status_code=409, The user already exists.\n
     """
-    if user.age <= 0:
+    if user.age is not None and user.age <= 0:
         raise HTTPException(status_code=400, detail="Age parameter is must be integer.")
 
     has_name = crud_user.find_name(user.name, db)
@@ -123,11 +120,10 @@ async def update_user(
 
     Parameters
     ----------
-    user_id : int
-    user : schemas.UserInfo
-        name: str (max_length<=16)
-        age: int (0 < age <= 120)
-    db : Session, optional
+    user_id : int\n
+    user : schemas.UserInfo\n
+        name: str (max_length<=16)\n
+        age: int (0 < age <= 120)\n
 
     Returns
     -------
@@ -137,18 +133,18 @@ async def update_user(
     Raises
     ------
     HTTPException
-        status_code=400, Invalid User ID: {user_id}
+        status_code=400, Invalid User ID: {user_id}\n
     HTTPException
-        status_cod=400, Age parameter is must be integer.
+        status_cod=400, Age parameter is must be integer.\n
     HTTPException
-        status_code=404, The User is not found.
+        status_code=404, The User is not found.\n
     HTTPException
         status_code=409, The user already exists.
     """
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
 
-    if user.age <= 0:
+    if user.age is not None and user.age <= 0:
         raise HTTPException(status_code=400, detail="Age parameter is must be integer.")
 
     has_id = crud_user.find(user_id, db)
@@ -170,19 +166,17 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
 
     Parameters
     ----------
-    user_id : int
-    db : Session, optional
+    user_id : int\n
 
     Returns
     -------
     User
-        Deleted User Information
-        (user_id, name, age)
+        Deleted User Information (user_id, name, age)
 
     Raises
     ------
     HTTPException
-        status_code=400, Invalid User ID: {user_id}
+        status_code=400, Invalid User ID: {user_id}\n
     HTTPException
         status_code=404, The User is not found.
     """
