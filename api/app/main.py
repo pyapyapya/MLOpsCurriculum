@@ -89,12 +89,11 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
 
-    has_id = get_user(user_id, db)
-    if not has_id:
+    user = crud_user.get_user(user_id, db)
+    if not user:
         raise HTTPException(status_code=404, detail=f"The User is not found.")
 
-    users = crud_user.get_user(user_id, db)
-    return users
+    return user
 
 
 @app.post("/users", response_model=UserInfo)
