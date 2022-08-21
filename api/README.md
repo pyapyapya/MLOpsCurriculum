@@ -1,5 +1,6 @@
 ### Getting Start
 ```
+cd pip install -r requirements.txt
 cd api/app/
 uvicorn main:app --reload
 ```
