@@ -6,24 +6,10 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from crud import crud_user
-from database.database import SessionLocal, engine
-from database.tables.user import Base
 from schemas.user import UserCreate, UserInfo
-
-Base.metadata.create_all(bind=engine)
+from database.session import get_db
 
 app = FastAPI()
-
-
-def get_db():
-    """
-    Get Database instance
-    """
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @app.exception_handler(RequestValidationError)
