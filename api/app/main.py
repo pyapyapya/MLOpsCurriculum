@@ -44,7 +44,7 @@ async def get_users(db: Session = Depends(get_db)):
     _type_
         _description_
     """
-    users = crud_user.get_users(db)
+    users = crud_user.find_all(db)
     return users
 
 
@@ -75,7 +75,7 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
 
-    user = crud_user.get_user(user_id, db)
+    user = crud_user.find(user_id, db)
     if not user:
         raise HTTPException(status_code=404, detail=f"The User is not found.")
 
@@ -106,14 +106,15 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     HTTPException
         _description_
     """
+    print(user.age)
     if user.age <= 0:
         raise HTTPException(status_code=400, detail="age parameter is must be integer.")
 
-    has_name = crud_user.get_user_name(user.name, db)
+    has_name = crud_user.find_name(user.name, db)
     if has_name:
         raise HTTPException(status_code=409, detail="The user already exists.")
 
-    users = crud_user.create_user(user, db)
+    users = crud_user.create(user, db)
     return users
 
 
@@ -155,15 +156,15 @@ async def update_user(
     if user_info.age <= 0:
         raise HTTPException(status_code=400, detail="age parameter is must be integer.")
 
-    has_id = search_user_id(user_id, db)
+    has_id = crud_user.find(user_id, db)
     if not has_id:
         raise HTTPException(status_code=404, detail=f"The User is not found.")
 
-    has_name = serach_user_name(user_info.name, db)
+    has_name = crud_user.find_name(user_info.name, db)
     if has_name:
         raise HTTPException(status_code=409, detail="The user already exists.")
 
-    crud_user.update_user(user_id, user_info, db)
+    crud_user.update(user_id, user_info, db)
     return {"id": user_id, **user_info.dict()}
 
 
@@ -191,14 +192,13 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
     HTTPException
         _description_
     """
-    user = crud_user.get_user(user_id, db)
 
     if not isinstance(user_id, int):
         raise HTTPException(status_code=400, detail=f"Invalid User ID: {user_id}")
 
-    has_id = search_user_id(user_id, db)
-    if not has_id:
+    user = crud_user.find(user_id, db)
+    if not user:
         raise HTTPException(status_code=404, detail=f"The User is not found.")
 
-    crud_user.delete_user(user_id, db)
+    crud_user.delete(user_id, db)
     return user
