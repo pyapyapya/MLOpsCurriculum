@@ -11,37 +11,12 @@ services:
       - "80:80"
     depends_on:
       - db
-    networks:
-      - fastapi_network
-    environment:
-      TZ: "Asia/Tokyo"
 
   db:
     image: mariadb
     container_name: fastapi_db
-    build:
-      context: app/database/
-      dockerfile: Dockerfile
-    command: /usr/bin/mysql_secure_installation
     ports:
         - 8080:8080
     restart: always
-    tty: true
-    environment:
-      TZ: "Asia/Tokyo"
-    # volumes:
-    #   - ./database/conf.d:/etc/maria_db/conf.d:cached
-    #   - ./log/db:/var/log/maria_db:cached
-    networks:
-      - fastapi_network
     env_file:
       - .env
-
-networks:
-  default:
-    external:
-      name: bridge
-  fastapi_network:
-    name: fastapi_network
-    driver: bridge
-    external: true
