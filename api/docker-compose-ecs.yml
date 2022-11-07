@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  fastapi:
+    image: "api_fastapi:lastest"
+    container_name: "fastapi"
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+
+  db:
+    image: mariadb
+    container_name: fastapi_db
+    restart: always
+    environment:
+      MARIADB_USER: "${MARIADB_USER}"
+      MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
+    env_file:
+      - .env
