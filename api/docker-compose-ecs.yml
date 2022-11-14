@@ -2,10 +2,13 @@ version: "3"
 
 services:
   fastapi:
-    image: "api_fastapi:lastest"
-    container_name: "fastapi"
+    image: api_fastapi:lastest
+    container_name: fastapi
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - 80:80
     depends_on:
       - db
 
